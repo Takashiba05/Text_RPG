@@ -1,1 +1,24 @@
-//ä½•ã‚‚æ›¸ã‹ãªã„
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include "General_Rules.h"
+
+int main(void){
+        // —”‚Ì‰Šú‰»
+    srand((unsigned int)time(NULL));
+
+        // ‘è–¼•åW’†
+    printf("_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/\n");
+    printf("                  TXT RPG               \n");
+    printf("_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/\n");
+
+        // ƒvƒŒƒCƒ„[‚ªEnterƒL[‚ğ‰Ÿ‚·‚Ì‚ğ‘Ò‚Âˆ—
+    printf("     ¨ enter    \n");
+        //Enteræ“¾
+    getchar();
+        //ƒ^[ƒ~ƒiƒ‹‚Ì“à—eíœ
+    system("cls");
+
+    return 0;
+
+}
