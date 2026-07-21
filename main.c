@@ -32,17 +32,17 @@ int main(void){
             }
 
         if(start == 1){ 
-                hero.stage = 1; 　//構造体に入れて
+                hero.stage = 1;
+                hero.mp = 10;
                 hero.hp = 10;
                 hero.max_hp = 10; 
                 hero.atk = 5; 
                 hero.def = 2; 
+                hero.mp = 10;
                 hero.level = 1; 
                 hero.exp = 0;
 
 //導入ストーリー
-            //my name 決定（txtファイル入出力）
-            //.h .storyに追加忘れないようにね
             play_opening_story(&hero);
         }
 
@@ -56,7 +56,7 @@ int main(void){
 
                 fscanf(fp, "%s %d %d %d %d %d %d %d", 
                     hero.name, 
-                    &hero.stage, 　//構造体に入れて
+                    &hero.stage,
                     &hero.hp, 
                     &hero.max_hp, 
                     &hero.atk, 
