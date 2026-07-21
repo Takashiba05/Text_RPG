@@ -33,7 +33,6 @@ int main(void){
 
         if(start == 1){ 
                 hero.stage = 1;
-                hero.mp = 10;
                 hero.hp = 10;
                 hero.max_hp = 10; 
                 hero.atk = 5; 
@@ -61,7 +60,8 @@ int main(void){
                     &hero.max_hp, 
                     &hero.atk, 
                     &hero.def, 
-                    &hero.level, 
+                    &hero.mp,
+                    &hero.level,
                     &hero.exp);
 
                     fclose(fp);
@@ -123,6 +123,7 @@ int main(void){
                                     hero.max_hp,
                                     hero.atk,
                                     hero.def,
+                                    hero.mp,
                                     hero.level,
                                     hero.exp);
 
@@ -152,4 +153,6 @@ int main(void){
         while(getchar() != '\n');
 
     }   while(retry == 1);
+    
+    return 0;
 }
