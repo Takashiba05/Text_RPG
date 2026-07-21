@@ -28,7 +28,8 @@ typedef struct {
 // 【story.c に書く関数】ゲーム全体のループを開始する
 void play_opening_story(Character *hero);
 
-// 【battle.c に書く関数
+// 【battle.c に書く関数】
+        //0=勝利(次のステージへ) / 1=敗北 / 2=魔王撃破 / 3=セーブして終了
 int start_battle(Character *hero);
 
 //enemy.txt からステージに応じた敵のデータを読み込む
