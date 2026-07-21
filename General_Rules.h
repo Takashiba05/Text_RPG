@@ -16,6 +16,7 @@ typedef struct {
     int max_hp;              // 最大HP
     int atk;                 // 攻撃力
     int def;                 // 防御力
+    int mp;                  // 残りMP
     int level;               // レベル
     int exp;                 // 経験値
     
@@ -27,10 +28,10 @@ typedef struct {
 // 【story.c に書く関数】ゲーム全体のループを開始する
 void play_opening_story(Character *hero);
 
-// 【battle.c に書く関数】戦闘を開始し、勝敗（勝てば1, 負ければ0）を返す
+// 【battle.c に書く関数
 int start_battle(Character *hero);
 
-// 【A君が今後作成する関数】enemy.txt からステージに応じた敵のデータを読み込む
+//enemy.txt からステージに応じた敵のデータを読み込む
 void load_enemy(Character *enemy);
 
 #endif // GENERAL_RULES_H
