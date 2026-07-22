@@ -1,1 +1,158 @@
-//ä½•ã‚‚æ›¸ã‹ãªã„
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include "General_Rules.h"
+
+int main(void){
+    int start = 0;
+    int retry;
+    Character hero;
+    Character enemy;
+    
+
+    do{
+        start = 0;
+
+        system("cls");
+
+//title
+            // ‘è–¼•åW’†
+        printf("_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/\n");
+        printf("                  TXT RPG               \n");
+        printf("_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/\n\n\n\n");
+
+            while(start != 1 && start != 2){
+                printf("1 :‚Í‚¶‚ß‚©‚ç    ¦‘O‚ÉƒZ[ƒu‚µ‚Ä‚¢‚½ƒf[ƒ^‚Ííœ‚³‚ê‚Ü‚·\n");
+                printf("2 :‘O‚ÌƒZ[ƒuƒf[ƒ^‚©‚ç\n");
+                printf(">>");
+
+                scanf("%d", &start);
+                while (getchar() != '\n');
+                printf("\n");
+            }
+
+        if(start == 1){ 
+                hero.stage = 1;
+                hero.hp = 10;
+                hero.max_hp = 10; 
+                hero.atk = 5; 
+                hero.def = 2; 
+                hero.mp = 10;
+                hero.level = 1; 
+                hero.exp = 0;
+
+//“±“üƒXƒg[ƒŠ[
+            play_opening_story(&hero);
+        }
+
+            else if(start == 2){
+                FILE *fp = fopen("hero.txt", "r");
+
+                if (fp == NULL) {
+                    printf("ƒGƒ‰[Fhero.txt‚ª“Ç‚İ‚ß‚Ü‚¹‚ñ‚Å‚µ‚½B\n");
+                    return 1;
+                }
+
+                fscanf(fp, "%s %d %d %d %d %d %d %d", 
+                    hero.name, 
+                    &hero.stage,
+                    &hero.hp, 
+                    &hero.max_hp, 
+                    &hero.atk, 
+                    &hero.def, 
+                    &hero.mp,
+                    &hero.level,
+                    &hero.exp);
+
+                    fclose(fp);
+                    
+            }
+
+        system("cls");
+        
+
+//í“¬
+            //roopˆ—‚Å‚T‰ñ
+        for (; hero.stage <= 5; hero.stage++) {
+    
+                // í“¬ŠJniƒXƒe[ƒW”Ô†‚Æ—EÒ‚ğ“n‚·j
+            int battle_result = start_battle(&hero);
+            
+
+            if (battle_result == 0) {
+                printf("ƒXƒe[ƒW%d‚Éi‚İ‚Ü‚·...\n", hero.stage + 1);
+
+                printf("\n");
+                printf("?");
+                getchar();
+                system("cls");
+            }
+                
+                else if (battle_result == 1) {
+                    printf("ƒQ[ƒ€ƒI[ƒo[I\n");
+                    printf("‚à‚¤ˆê“xˆÙ¢ŠE“]¶‚·‚éH\n");
+                    break;
+                } 
+
+                        else if (battle_result==2){
+                            system("cls");
+
+                            printf("‚¨‚ß‚Å‚Æ‚¤II‚±‚Ì¢ŠE‚Ì•½˜a‚Í•Û‚½‚ê‚½III\n");
+                            printf("ŒN‚ÍÅ‹­‚Ìím‚¾I\n\n");
+
+                            printf("‚à‚¤ˆê“xÅ‰‚©‚ç—V‚ÔII\n");
+
+                            printf("?");
+
+                            printf("\n");
+                            getchar();
+                            
+                            break;
+                        }
+
+                            else if (battle_result==3){
+                                printf("ƒZ[ƒu‚µ‚Ä‚¢‚Ü‚·...");
+
+                                FILE *fp_save = fopen("hero.txt", "w");
+
+                                if(fp_save != NULL){
+                                    fprintf(fp_save, "%s %d %d %d %d %d %d %d\n",
+                                    hero.name,
+                                    hero.stage,
+                                    hero.hp,
+                                    hero.max_hp,
+                                    hero.atk,
+                                    hero.def,
+                                    hero.mp,
+                                    hero.level,
+                                    hero.exp);
+
+                                    fclose(fp_save);
+                                    printf("ƒf[ƒ^‚ğ•Û‘¶‚µ‚Ü‚µ‚½IƒQ[ƒ€‚ğI—¹‚µ‚Ü‚·B\n");
+
+                                    getchar();
+                                    system("cls");
+
+                                    return 0;
+                                    }
+                               
+                                         else {
+                                                printf("ƒZ[ƒu‚É¸”s‚µ‚Ü‚µ‚½B\n");
+                                                break;
+                                            }
+                                }
+
+        }
+
+
+//ƒŠƒgƒ‰ƒCŠm”F
+        printf("1 : Play Again!!\n");
+        printf("2 : Quit\n");
+
+        scanf("%d", &retry);
+        while(getchar() != '\n');
+
+    }   while(retry == 1);
+    
+    return 0;
+}
