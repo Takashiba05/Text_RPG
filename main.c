@@ -24,8 +24,10 @@ int main(void){
             printf("1 :はじめから    ※前にセーブしていたデータは削除されます\n");
             printf("2 :前のセーブデータから\n");
             printf(">>");
-
-            scanf("%d", &start);
+        
+            if (scanf("%d", &start) != 1) {
+                start = 0; // 不正入力時は無効値としてループを継続させる
+            }
             while (getchar() != '\n');
             printf("\n");
         }
@@ -142,13 +144,16 @@ int main(void){
         }
 
 //リトライ確認
-        printf("1 : Play Again!!\n");
-        printf("2 : Quit\n");
+retry = 0;
+while (retry != 1 && retry != 2) {
+    printf("1 : Play Again!!\n");
+    printf("2 : Quit\n");
+    printf(">>");
 
-        scanf("%d", &retry);
-        while(getchar() != '\n');
-
-    }   while(retry == 1);
-
-    return 0;
+    if (scanf("%d", &retry) != 1) {
+        retry = 0; // 不正入力時は無効値としてループを継続させる
+    }
+    while (getchar() != '\n');
 }
+
+}   while(retry == 1);

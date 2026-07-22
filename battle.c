@@ -173,8 +173,10 @@ int start_battle(Character *hero) {
         }
         printf("使う技を選んでください >> ");
 
-        int choice;
-        scanf("%d", &choice);
+        int choice = 0; // 初期化(scanf失敗時に不正な値として扱われるようにする)
+        if (scanf("%d", &choice) != 1) {
+            choice = 0; // scanf失敗時も明示的に無効値にする
+        }
         while (getchar() != '\n');
 
         if (choice < 1 || choice > hero->skill_count) {
