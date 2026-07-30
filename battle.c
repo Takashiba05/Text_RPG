@@ -6,6 +6,7 @@
 
 #define SKILL_FILE "skills.txt"
 #define MAX_SKILL_POOL 200
+#define BASIC_ATTACK_ID 1 // パンチ（FIXED, MP消費0）。敵のMP不足時の共通フォールバックとして使う
 
 // ==========================================
 // skills.txt を全件読み込む
@@ -147,7 +148,7 @@ static void use_skill(Character *attacker, Character *defender, Skill *used_skil
 
 // ==========================================
 // メイン：戦闘処理
-// 戻り値: 0=勝利/1=敗北/2=魔王撃破/3=セーブして終了
+// 戻り値: 0=勝利/1=敗北/2=魔王撃破
 // ==========================================
 int start_battle(Character *hero) {
     // srand はここでは呼ばない（main.c側で起動時に1回だけ実行する方針に統一）
@@ -176,10 +177,8 @@ int start_battle(Character *hero) {
         }
         printf("使う技を選んでください >> ");
 
-        int choice = 0; // 初期化(scanf失敗時に不正な値として扱われるようにする)
-        if (scanf("%d", &choice) != 1) {
-            choice = 0; // scanf失敗時も明示的に無効値にする
-        }
+        int choice;
+        scanf("%d", &choice);
         while (getchar() != '\n');
 
         if (choice < 1 || choice > hero->skill_count) {
@@ -197,14 +196,29 @@ int start_battle(Character *hero) {
         if (enemy.hp <= 0) break;
 
         printf("\n--- %s のターン ---\n", enemy.name);
+        printf("HP:%d/%d MP:%d/%d\n", enemy.hp, enemy.max_hp, enemy.mp, enemy.max_mp);
 
-        // 敵の技が0件なら攻撃をスキップ(0除算防止)
-        if (enemy.skill_count > 0) {
-            int enemy_choice = rand() % enemy.skill_count;
-            Skill *enemy_skill = find_skill(pool, skill_count, enemy.skill_id[enemy_choice]);
-            use_skill(&enemy, hero, enemy_skill);
+        // MPが足りている技だけを候補として絞り込む
+        int usable_skills[MAX_SKILL_SLOT];
+        int usable_count = 0;
+        for (int i = 0; i < enemy.skill_count; i++) {
+            Skill *s = find_skill(pool, skill_count, enemy.skill_id[i]);
+            if (s != NULL && s->mp_cost <= enemy.mp) {
+                usable_skills[usable_count++] = enemy.skill_id[i];
+            }
+        }
+
+        Skill *enemy_skill;
+        if (usable_count > 0) {
+            int enemy_skill_id = usable_skills[rand() % usable_count];
+            enemy_skill = find_skill(pool, skill_count, enemy_skill_id);
         } else {
-            printf("%s は様子を見ている……\n", enemy.name);
+            printf("%s はMPが足りず、パンチを繰り出した！\n", enemy.name);
+            enemy_skill = find_skill(pool, skill_count, BASIC_ATTACK_ID);
+        }
+
+        if (enemy_skill != NULL) {
+            use_skill(&enemy, hero, enemy_skill);
         }
     }
 
