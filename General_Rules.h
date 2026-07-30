@@ -1,4 +1,3 @@
-//構造体全てを書いていく
 #ifndef GENERAL_RULES_H
 #define GENERAL_RULES_H
 // ==========================================
@@ -12,6 +11,7 @@
 // ==========================================
 typedef struct {
     char name[NAME_MAX_LEN]; // キャラクターの名前
+
     int stage;                // 現在のステージ
     int hp;                   // 現在のHP
     int max_hp;                // 最大HP
@@ -25,6 +25,7 @@ typedef struct {
     int skill_count;               // 習得している技の数
     int is_boss;                    // 魔王（最終ボス）かどうか
 } Character;
+
 // 技（スキル）のデータ構造
 typedef struct {
     int id;              // 技の一意なID
@@ -37,13 +38,14 @@ typedef struct {
 // ==========================================
 // 3. 関数の宣言（プロトタイプ宣言）
 // ==========================================
-// ※ 実装（中身）は story.c や battle.c に書きますが、
-//    ここに宣言しておくことで、お互いのファイルをまたいで呼び出せるようになります。
-// 【story.c に書く関数】ゲーム全体のループを開始する（オープニング演出）
+
+// 【story.c に書く関数】ゲーム全体のループを開始する
 void play_opening_story(Character *hero);
-// 【battle.c に書く関数】戦闘を開始する
-// 戻り値: 0=勝利/1=敗北/2=魔王撃破/3=セーブして終了
+
+// 【battle.c に書く関数】
 int start_battle(Character *hero);
-// 【A君が担当する関数】enemy.txt からステージに応じた敵データを読み込む
+
+//enemy.txt からステージに応じた敵のデータを読み込む
 void load_enemy(Character *enemy);
+
 #endif // GENERAL_RULES_H
