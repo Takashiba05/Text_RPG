@@ -7,8 +7,7 @@ int main(void){
     int start = 0;
     int retry;
     Character hero;
-
-    srand((unsigned int)time(NULL)); // 乱数シードはプログラム起動時に1回だけ初期化
+    Character enemy;
 
     do{
         start = 0;
@@ -16,6 +15,7 @@ int main(void){
         system("cls");
 
 //title
+            // 題名募集中
         printf("_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/\n");
         printf("                  TXT RPG               \n");
         printf("_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/\n\n\n\n");
@@ -32,50 +32,62 @@ int main(void){
             printf("\n");
         }
 
-        if(start == 1){
-            hero.stage = 1;
-            hero.hp = 10;
-            hero.max_hp = 10;
-            hero.atk = 5;
-            hero.def = 2;
-            hero.mp = 10;
-            hero.max_mp = 10;
-            hero.level = 1;
-            hero.exp = 0;
+        if(start == 1){ 
+                hero.stage = 1;
+                hero.hp = 10;
+                hero.max_hp = 10; 
+                hero.atk = 5; 
+                hero.def = 2; 
+                hero.mp = 10;
+                hero.level = 1; 
+                hero.exp = 0;
 
 //導入ストーリー
             play_opening_story(&hero);
         }
 
-        else if(start == 2){
-            FILE *fp = fopen("hero.txt", "r");
+            else if(start == 2){
+                FILE *fp = fopen("hero.txt", "r");
 
-            if (fp == NULL) {
-                printf("エラー：hero.txtが読み込めませんでした。\n");
-                return 1;
+                if (fp == NULL) {
+                    printf("エラー：hero.txtが読み込めませんでした。\n");
+                    return 1;
+                }
+
+                fscanf(fp, "%s %d %d %d %d %d %d %d", 
+                    hero.name, 
+                    &hero.stage,
+                    &hero.hp, 
+                    &hero.max_hp, 
+                    &hero.atk, 
+                    &hero.def, 
+                    &hero.mp,
+                    &hero.level,
+                    &hero.exp);
+
+                    fclose(fp);
+                    
             }
 
-            fscanf(fp, "%49s %d %d %d %d %d %d %d %d %d",
-                hero.name,
-                &hero.stage,
-                &hero.hp,
-                &hero.max_hp,
-                &hero.atk,
-                &hero.def,
-                &hero.mp,
-                &hero.max_mp,
-                &hero.level,
-                &hero.exp);
-
-            fclose(fp);
-        }
-
         system("cls");
+        
 
 //戦闘
+            //roop処理で５回
         for (; hero.stage <= 5; hero.stage++) {
 
+            int original_stage = hero.stage; // ループ制御用に退避
+
+            // 裏ボス出現抽選（1%）
+            if (rand() % 100 == 0) {
+                play_secret_boss_encounter(); // story.cに演出を委譲
+                hero.stage = 777;
+            }
+
             int battle_result = start_battle(&hero);
+            
+
+            hero.stage = original_stage; // 抽選に関わらず必ず復元
 
             if (battle_result == 0) {
                 printf("ステージ%dに進みます...\n", hero.stage + 1);
@@ -85,63 +97,63 @@ int main(void){
                 getchar();
                 system("cls");
             }
-
-            else if (battle_result == 1) {
-                printf("ゲームオーバー！\n");
-                printf("もう一度異世界転生する？\n");
-                break;
-            }
-
-            else if (battle_result==2){
-                system("cls");
-
-                printf("おめでとう！！この世界の平和は保たれた！！！\n");
-                printf("君は最強の戦士だ！\n\n");
-
-                printf("もう一度最初から遊ぶ！！\n");
-
-                printf("?");
-
-                printf("\n");
-                getchar();
-
-                break;
-            }
-
-            else if (battle_result==3){
-                printf("セーブしています...");
-
-                FILE *fp_save = fopen("hero.txt", "w");
-
-                if(fp_save != NULL){
-                    fprintf(fp_save, "%s %d %d %d %d %d %d %d %d %d\n",
-                    hero.name,
-                    hero.stage,
-                    hero.hp,
-                    hero.max_hp,
-                    hero.atk,
-                    hero.def,
-                    hero.mp,
-                    hero.max_mp,
-                    hero.level,
-                    hero.exp);
-
-                    fclose(fp_save);
-                    printf("データを保存しました！ゲームを終了します。\n");
-
-                    getchar();
-                    system("cls");
-
-                    return 0;
-                    }
-
-                else {
-                    printf("セーブに失敗しました。\n");
+                
+                else if (battle_result == 1) {
+                    printf("ゲームオーバー！\n");
+                    printf("もう一度異世界転生する？\n");
                     break;
-                }
-            }
+                } 
+
+                        else if (battle_result==2){
+                            system("cls");
+
+                            printf("おめでとう！！この世界の平和は保たれた！！！\n");
+                            printf("君は最強の戦士だ！\n\n");
+
+                            printf("もう一度最初から遊ぶ！！\n");
+
+                            printf("?");
+
+                            printf("\n");
+                            getchar();
+                            
+                            break;
+                        }
+
+                            else if (battle_result==3){
+                                printf("セーブしています...");
+
+                                FILE *fp_save = fopen("hero.txt", "w");
+
+                                if(fp_save != NULL){
+                                    fprintf(fp_save, "%s %d %d %d %d %d %d %d\n",
+                                    hero.name,
+                                    hero.stage,
+                                    hero.hp,
+                                    hero.max_hp,
+                                    hero.atk,
+                                    hero.def,
+                                    hero.mp,
+                                    hero.level,
+                                    hero.exp);
+
+                                    fclose(fp_save);
+                                    printf("データを保存しました！ゲームを終了します。\n");
+
+                                    getchar();
+                                    system("cls");
+
+                                    return 0;
+                                    }
+                               
+                                         else {
+                                                printf("セーブに失敗しました。\n");
+                                                break;
+                                            }
+                                }
 
         }
+
 
 //リトライ確認
 retry = 0;

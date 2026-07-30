@@ -157,7 +157,7 @@ int start_battle(Character *hero) {
     if (skill_count == 0) return 1; // ファイル読み込み失敗時は敗北扱いで抜ける
 
     Character enemy;
-    load_enemy(&enemy);
+    load_enemy(hero->stage, &enemy);
 
     assign_hero_skills(hero, pool, skill_count);
     assign_enemy_skills(&enemy, pool, skill_count, hero->stage);
