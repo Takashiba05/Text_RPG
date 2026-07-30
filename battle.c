@@ -65,7 +65,7 @@ static int pick_random_skill(Skill *pool, int count, const char *tag, int stage,
 // ==========================================
 static void assign_hero_skills(Character *hero, Skill *pool, int count) {
     hero->skill_count = 0;
-    int used[MAX_SKILL_SLOT];
+    int used[MAX_SKILL_SLOT] = {0};
 
     for (int i = 0; i < count && hero->skill_count < MAX_SKILL_SLOT; i++) {
         if (strcmp(pool[i].pool, "FIXED") == 0 && pool[i].stage == 0) {
@@ -99,7 +99,7 @@ static void assign_hero_skills(Character *hero, Skill *pool, int count) {
 // ==========================================
 static void assign_enemy_skills(Character *enemy, Skill *pool, int count, int stage) {
     enemy->skill_count = 0;
-    int used[MAX_SKILL_SLOT];
+    int used[MAX_SKILL_SLOT] = {0};
 
     for (int n = 0; n < 4; n++) {
         int id;
@@ -154,7 +154,10 @@ int start_battle(Character *hero) {
 
     Skill pool[MAX_SKILL_POOL];
     int skill_count = load_all_skills(pool);
-    if (skill_count == 0) return 1; // ファイル読み込み失敗時は敗北扱いで抜ける
+    if (skill_count == 0) {
+        printf("エラー：技データの読み込みに失敗したため、戦闘を開始できません。\n");
+        return 1;
+    }
 
     Character enemy;
     load_enemy(hero->stage, &enemy);
