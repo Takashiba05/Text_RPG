@@ -88,7 +88,7 @@ void load_enemy(int stage, Character *enemy) {
     enemy->atk = pool[chosen].atk;
     enemy->def = pool[chosen].def;
     enemy->mp = pool[chosen].mp;
-    enemy->max_mp = 0; // 敵はmax_mpを使わない
+    enemy->max_mp = pool[chosen].mp; // 初期MP=最大MPとして扱う（enemy.txtにmax_mp専用列がないため）
     enemy->level = pool[chosen].level;
     enemy->exp = pool[chosen].exp;
 
