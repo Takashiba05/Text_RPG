@@ -3,12 +3,14 @@
 #include <time.h>
 #include "General_Rules.h"
 
+void play_secret_boss_encounter(void);
+
 int main(void){
     int start = 0;
     int retry;
     Character hero;
-    Character enemy;
-    
+
+    srand((unsigned int)time(NULL)); // ä¹±æ•°ã‚·ãƒ¼ãƒ‰ã¯ãƒ—ãƒ­ã‚°ãƒ©ãƒ èµ·å‹•æ™‚ã«1å›ã ã‘åˆæœŸåŒ–
 
     do{
         start = 0;
@@ -16,143 +18,167 @@ int main(void){
         system("cls");
 
 //title
-            // ‘è–¼•åW’†
+        // é¡Œåå‹Ÿé›†ä¸­
         printf("_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/\n");
         printf("                  TXT RPG               \n");
         printf("_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/\n\n\n\n");
 
-            while(start != 1 && start != 2){
-                printf("1 :‚Í‚¶‚ß‚©‚ç    ¦‘O‚ÉƒZ[ƒu‚µ‚Ä‚¢‚½ƒf[ƒ^‚Ííœ‚³‚ê‚Ü‚·\n");
-                printf("2 :‘O‚ÌƒZ[ƒuƒf[ƒ^‚©‚ç\n");
-                printf(">>");
+        while(start != 1 && start != 2){
+            printf("1 :ã¯ã˜ã‚ã‹ã‚‰    â€»å‰ã«ã‚»ãƒ¼ãƒ–ã—ã¦ã„ãŸãƒ‡ãƒ¼ã‚¿ã¯å‰Šé™¤ã•ã‚Œã¾ã™\n");
+            printf("2 :å‰ã®ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰\n");
+            printf(">>");
 
-                scanf("%d", &start);
-                while (getchar() != '\n');
-                printf("\n");
+            if (scanf("%d", &start) != 1) {
+                start = 0; // ä¸æ­£å…¥åŠ›æ™‚ã¯ç„¡åŠ¹å€¤ã¨ã—ã¦ãƒ«ãƒ¼ãƒ—ã‚’ç¶™ç¶šã•ã›ã‚‹
             }
+            while (getchar() != '\n');
+            printf("\n");
+        }
 
-        if(start == 1){ 
-                hero.stage = 1;
-                hero.hp = 10;
-                hero.max_hp = 10; 
-                hero.atk = 5; 
-                hero.def = 2; 
-                hero.mp = 10;
-                hero.level = 1; 
-                hero.exp = 0;
+        if(start == 1){
+            hero.stage = 1;
+            hero.hp = 10;
+            hero.max_hp = 10;
+            hero.atk = 5;
+            hero.def = 2;
+            hero.mp = 10;
+            hero.max_mp = 10;
+            hero.level = 1;
+            hero.exp = 0;
 
-//“±“üƒXƒg[ƒŠ[
+//å°å…¥ã‚¹ãƒˆãƒ¼ãƒªãƒ¼
             play_opening_story(&hero);
         }
 
-            else if(start == 2){
-                FILE *fp = fopen("hero.txt", "r");
+        else if(start == 2){
+            FILE *fp = fopen("hero.txt", "r");
 
-                if (fp == NULL) {
-                    printf("ƒGƒ‰[Fhero.txt‚ª“Ç‚İ‚ß‚Ü‚¹‚ñ‚Å‚µ‚½B\n");
-                    return 1;
-                }
-
-                fscanf(fp, "%s %d %d %d %d %d %d %d", 
-                    hero.name, 
-                    &hero.stage,
-                    &hero.hp, 
-                    &hero.max_hp, 
-                    &hero.atk, 
-                    &hero.def, 
-                    &hero.mp,
-                    &hero.level,
-                    &hero.exp);
-
-                    fclose(fp);
-                    
+            if (fp == NULL) {
+                printf("ã‚¨ãƒ©ãƒ¼ï¼šhero.txtãŒèª­ã¿è¾¼ã‚ã¾ã›ã‚“ã§ã—ãŸã€‚\n");
+                return 1;
             }
 
-        system("cls");
-        
+            int read_count = fscanf(fp, "%49s %d %d %d %d %d %d %d %d %d",
+                hero.name,
+                &hero.stage,
+                &hero.hp,
+                &hero.max_hp,
+                &hero.atk,
+                &hero.def,
+                &hero.mp,
+                &hero.max_mp,
+                &hero.level,
+                &hero.exp);
 
-//í“¬
-            //roopˆ—‚Å‚T‰ñ
-        for (; hero.stage <= 5; hero.stage++) {
-    
-                // í“¬ŠJniƒXƒe[ƒW”Ô†‚Æ—EÒ‚ğ“n‚·j
-            int battle_result = start_battle(&hero);
-            
+            fclose(fp);
 
-            if (battle_result == 0) {
-                printf("ƒXƒe[ƒW%d‚Éi‚İ‚Ü‚·...\n", hero.stage + 1);
-
-                printf("\n");
-                printf("?");
-                getchar();
-                system("cls");
+            if (read_count != 10) {
+                printf("ã‚¨ãƒ©ãƒ¼ï¼šhero.txtã®ãƒ‡ãƒ¼ã‚¿ãŒå£Šã‚Œã¦ã„ã¾ã™ã€‚\n");
+                return 1;
             }
-                
-                else if (battle_result == 1) {
-                    printf("ƒQ[ƒ€ƒI[ƒo[I\n");
-                    printf("‚à‚¤ˆê“xˆÙ¢ŠE“]¶‚·‚éH\n");
-                    break;
-                } 
-
-                        else if (battle_result==2){
-                            system("cls");
-
-                            printf("‚¨‚ß‚Å‚Æ‚¤II‚±‚Ì¢ŠE‚Ì•½˜a‚Í•Û‚½‚ê‚½III\n");
-                            printf("ŒN‚ÍÅ‹­‚Ìím‚¾I\n\n");
-
-                            printf("‚à‚¤ˆê“xÅ‰‚©‚ç—V‚ÔII\n");
-
-                            printf("?");
-
-                            printf("\n");
-                            getchar();
-                            
-                            break;
-                        }
-
-                            else if (battle_result==3){
-                                printf("ƒZ[ƒu‚µ‚Ä‚¢‚Ü‚·...");
-
-                                FILE *fp_save = fopen("hero.txt", "w");
-
-                                if(fp_save != NULL){
-                                    fprintf(fp_save, "%s %d %d %d %d %d %d %d\n",
-                                    hero.name,
-                                    hero.stage,
-                                    hero.hp,
-                                    hero.max_hp,
-                                    hero.atk,
-                                    hero.def,
-                                    hero.mp,
-                                    hero.level,
-                                    hero.exp);
-
-                                    fclose(fp_save);
-                                    printf("ƒf[ƒ^‚ğ•Û‘¶‚µ‚Ü‚µ‚½IƒQ[ƒ€‚ğI—¹‚µ‚Ü‚·B\n");
-
-                                    getchar();
-                                    system("cls");
-
-                                    return 0;
-                                    }
-                               
-                                         else {
-                                                printf("ƒZ[ƒu‚É¸”s‚µ‚Ü‚µ‚½B\n");
-                                                break;
-                                            }
-                                }
-
         }
 
+        system("cls");
 
-//ƒŠƒgƒ‰ƒCŠm”F
-        printf("1 : Play Again!!\n");
-        printf("2 : Quit\n");
+//æˆ¦é—˜
+        //roopå‡¦ç†ã§ï¼•å›
+        for (; hero.stage <= 5; hero.stage++) {
 
-        scanf("%d", &retry);
-        while(getchar() != '\n');
+            int original_stage = hero.stage; // ãƒ«ãƒ¼ãƒ—åˆ¶å¾¡ç”¨ã«é€€é¿
+
+            // è£ãƒœã‚¹å‡ºç¾æŠ½é¸ï¼ˆ1%ï¼‰
+            if (rand() % 100 == 0) {
+                play_secret_boss_encounter(); // story.cã«æ¼”å‡ºã‚’å§”è­²
+                hero.stage = 777;
+            }
+
+            int battle_result = start_battle(&hero);
+
+            hero.stage = original_stage; // æŠ½é¸ã«é–¢ã‚ã‚‰ãšå¿…ãšå¾©å…ƒ
+
+            if (battle_result == 0) {
+                printf("ã‚¹ãƒ†ãƒ¼ã‚¸%dã‚’ã‚¯ãƒªã‚¢ã—ã¾ã—ãŸï¼\n", hero.stage);
+
+                int next_action = 0;
+                while (next_action != 1 && next_action != 2) {
+                    printf("1 : æ¬¡ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã«é€²ã‚€\n");
+                    printf("2 : ã‚»ãƒ¼ãƒ–ã—ã¦çµ‚äº†ã™ã‚‹\n");
+                    printf(">>");
+                    if (scanf("%d", &next_action) != 1) {
+                        next_action = 0;
+                    }
+                    while (getchar() != '\n');
+                }
+
+                if (next_action == 2) {
+                    printf("ã‚»ãƒ¼ãƒ–ã—ã¦ã„ã¾ã™...");
+
+                    FILE *fp_save = fopen("hero.txt", "w");
+                    if (fp_save != NULL) {
+                        // hero.stageã¯ç¾åœ¨ã‚¯ãƒªã‚¢ã—ãŸå€¤ã®ã¾ã¾ã€‚æ¬¡å›ãƒ­ãƒ¼ãƒ‰æ™‚ã¯foræ–‡ã®å†é–‹ç‚¹ã¨ã—ã¦
+                        // ã€Œhero.stage+1ã€ã‹ã‚‰å§‹ã‚ãŸã„ã®ã§ã€ä¿å­˜æ™‚ç‚¹ã§+1ã—ã¦ãŠã
+                        fprintf(fp_save, "%s %d %d %d %d %d %d %d %d %d\n",
+                            hero.name,
+                            hero.stage + 1,
+                            hero.hp,
+                            hero.max_hp,
+                            hero.atk,
+                            hero.def,
+                            hero.mp,
+                            hero.max_mp,
+                            hero.level,
+                            hero.exp);
+
+                        fclose(fp_save);
+                        printf("ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã—ã¾ã—ãŸï¼ã‚²ãƒ¼ãƒ ã‚’çµ‚äº†ã—ã¾ã™ã€‚\n");
+                        getchar();
+                        system("cls");
+                        return 0;
+                    } else {
+                        printf("ã‚»ãƒ¼ãƒ–ã«å¤±æ•—ã—ã¾ã—ãŸã€‚\n");
+                    }
+                }
+
+                system("cls");
+            }
+
+            else if (battle_result == 1) {
+                printf("ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼ï¼\n");
+                printf("ã‚‚ã†ä¸€åº¦ç•°ä¸–ç•Œè»¢ç”Ÿã™ã‚‹ï¼Ÿ\n");
+                break;
+            }
+
+            else if (battle_result==2){
+                system("cls");
+
+                printf("ãŠã‚ã§ã¨ã†ï¼ï¼ã“ã®ä¸–ç•Œã®å¹³å’Œã¯ä¿ãŸã‚ŒãŸï¼ï¼ï¼\n");
+                printf("å›ã¯æœ€å¼·ã®æˆ¦å£«ã ï¼\n\n");
+
+                printf("ã‚‚ã†ä¸€åº¦æœ€åˆã‹ã‚‰éŠã¶ï¼ï¼\n");
+
+                printf("?");
+
+                printf("\n");
+                getchar();
+
+                break;
+            }
+        }
+
+//ãƒªãƒˆãƒ©ã‚¤ç¢ºèª
+        retry = 0;
+        while (retry != 1 && retry != 2) {
+            printf("1 : Play Again!!\n");
+            printf("2 : Quit\n");
+            printf(">>");
+
+            if (scanf("%d", &retry) != 1) {
+                retry = 0; // ä¸æ­£å…¥åŠ›æ™‚ã¯ç„¡åŠ¹å€¤ã¨ã—ã¦ãƒ«ãƒ¼ãƒ—ã‚’ç¶™ç¶šã•ã›ã‚‹
+            }
+            while (getchar() != '\n');
+        }
 
     }   while(retry == 1);
-    
+
     return 0;
 }
