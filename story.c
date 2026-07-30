@@ -4,16 +4,14 @@
 
 void play_opening_story(Character *hero) {
     system("cls");
-
     printf("========================================\n");
     printf("         ～ 敵を倒すには運で十分 ～          \n");
     printf("========================================\n\n");
-
     printf("見知らぬ天井だ...\n");
     printf("頭が割れるように痛い。\n\n");
     printf("➤\n\n");
     getchar();
-
+  
     printf("確かあの時...宝くじで10億円当てて...\n");
     printf("ここは一体。\n\n");
     printf("➤\n\n");
@@ -52,18 +50,22 @@ void play_opening_story(Character *hero) {
     scanf("%19s", hero->name);
     while (getchar() != '\n');
 
-
     system("cls");
 
     printf("%sだけど...\n\n", hero->name);
     printf("??? : おお、%s様とおっしゃるのですね！\n", hero->name);
     printf("??? : %s様、どうか世界を救ってください。\n", hero->name);
     printf("??? : では いってらっしゃーーい！！\n\n");
-
     printf("うわぁぁぁぁぁぁ！！");
-
     printf("➤");
     getchar();
     system("cls");
+}
 
+// ==========================================
+// 裏ボス出現時の演出メッセージ
+// ==========================================
+void play_secret_boss_encounter(void) {
+    printf("……禍々しい気配を感じる……！\n");
+    printf("空間が歪み、何者かがこちらを見ている……\n\n");
 }

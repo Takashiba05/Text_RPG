@@ -73,10 +73,19 @@ int main(void){
 //戦闘
             //roop処理で５回
         for (; hero.stage <= 5; hero.stage++) {
-    
-                // 戦闘開始（ステージ番号と勇者を渡す）
+
+            int original_stage = hero.stage; // ループ制御用に退避
+
+            // 裏ボス出現抽選（1%）
+            if (rand() % 100 == 0) {
+                play_secret_boss_encounter(); // story.cに演出を委譲
+                hero.stage = 777;
+            }
+
             int battle_result = start_battle(&hero);
             
+
+            hero.stage = original_stage; // 抽選に関わらず必ず復元
 
             if (battle_result == 0) {
                 printf("ステージ%dに進みます...\n", hero.stage + 1);
