@@ -8,7 +8,6 @@ int main(void){
     int retry;
     Character hero;
     Character enemy;
-    
 
     do{
         start = 0;
@@ -16,14 +15,14 @@ int main(void){
         system("cls");
 
 //title
-            // ‘è–¼•åW’†
+            // é¡Œåå‹Ÿé›†ä¸­
         printf("_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/\n");
         printf("                  TXT RPG               \n");
         printf("_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/\n\n\n\n");
 
             while(start != 1 && start != 2){
-                printf("1 :‚Í‚¶‚ß‚©‚ç    ¦‘O‚ÉƒZ[ƒu‚µ‚Ä‚¢‚½ƒf[ƒ^‚Ííœ‚³‚ê‚Ü‚·\n");
-                printf("2 :‘O‚ÌƒZ[ƒuƒf[ƒ^‚©‚ç\n");
+                printf("1 :ã¯ã˜ã‚ã‹ã‚‰    â€»å‰ã«ã‚»ãƒ¼ãƒ–ã—ã¦ã„ãŸãƒ‡ãƒ¼ã‚¿ã¯å‰Šé™¤ã•ã‚Œã¾ã™\n");
+                printf("2 :å‰ã®ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰\n");
                 printf(">>");
 
                 scanf("%d", &start);
@@ -41,7 +40,7 @@ int main(void){
                 hero.level = 1; 
                 hero.exp = 0;
 
-//“±“üƒXƒg[ƒŠ[
+//å°å…¥ã‚¹ãƒˆãƒ¼ãƒªãƒ¼
             play_opening_story(&hero);
         }
 
@@ -49,7 +48,7 @@ int main(void){
                 FILE *fp = fopen("hero.txt", "r");
 
                 if (fp == NULL) {
-                    printf("ƒGƒ‰[Fhero.txt‚ª“Ç‚İ‚ß‚Ü‚¹‚ñ‚Å‚µ‚½B\n");
+                    printf("ã‚¨ãƒ©ãƒ¼ï¼šhero.txtãŒèª­ã¿è¾¼ã‚ã¾ã›ã‚“ã§ã—ãŸã€‚\n");
                     return 1;
                 }
 
@@ -71,16 +70,16 @@ int main(void){
         system("cls");
         
 
-//í“¬
-            //roopˆ—‚Å‚T‰ñ
+//æˆ¦é—˜
+            //roopå‡¦ç†ã§ï¼•å›
         for (; hero.stage <= 5; hero.stage++) {
     
-                // í“¬ŠJniƒXƒe[ƒW”Ô†‚Æ—EÒ‚ğ“n‚·j
+                // æˆ¦é—˜é–‹å§‹ï¼ˆã‚¹ãƒ†ãƒ¼ã‚¸ç•ªå·ã¨å‹‡è€…ã‚’æ¸¡ã™ï¼‰
             int battle_result = start_battle(&hero);
             
 
             if (battle_result == 0) {
-                printf("ƒXƒe[ƒW%d‚Éi‚İ‚Ü‚·...\n", hero.stage + 1);
+                printf("ã‚¹ãƒ†ãƒ¼ã‚¸%dã«é€²ã¿ã¾ã™...\n", hero.stage + 1);
 
                 printf("\n");
                 printf("?");
@@ -89,18 +88,18 @@ int main(void){
             }
                 
                 else if (battle_result == 1) {
-                    printf("ƒQ[ƒ€ƒI[ƒo[I\n");
-                    printf("‚à‚¤ˆê“xˆÙ¢ŠE“]¶‚·‚éH\n");
+                    printf("ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼ï¼\n");
+                    printf("ã‚‚ã†ä¸€åº¦ç•°ä¸–ç•Œè»¢ç”Ÿã™ã‚‹ï¼Ÿ\n");
                     break;
                 } 
 
                         else if (battle_result==2){
                             system("cls");
 
-                            printf("‚¨‚ß‚Å‚Æ‚¤II‚±‚Ì¢ŠE‚Ì•½˜a‚Í•Û‚½‚ê‚½III\n");
-                            printf("ŒN‚ÍÅ‹­‚Ìím‚¾I\n\n");
+                            printf("ãŠã‚ã§ã¨ã†ï¼ï¼ã“ã®ä¸–ç•Œã®å¹³å’Œã¯ä¿ãŸã‚ŒãŸï¼ï¼ï¼\n");
+                            printf("å›ã¯æœ€å¼·ã®æˆ¦å£«ã ï¼\n\n");
 
-                            printf("‚à‚¤ˆê“xÅ‰‚©‚ç—V‚ÔII\n");
+                            printf("ã‚‚ã†ä¸€åº¦æœ€åˆã‹ã‚‰éŠã¶ï¼ï¼\n");
 
                             printf("?");
 
@@ -111,7 +110,7 @@ int main(void){
                         }
 
                             else if (battle_result==3){
-                                printf("ƒZ[ƒu‚µ‚Ä‚¢‚Ü‚·...");
+                                printf("ã‚»ãƒ¼ãƒ–ã—ã¦ã„ã¾ã™...");
 
                                 FILE *fp_save = fopen("hero.txt", "w");
 
@@ -128,7 +127,7 @@ int main(void){
                                     hero.exp);
 
                                     fclose(fp_save);
-                                    printf("ƒf[ƒ^‚ğ•Û‘¶‚µ‚Ü‚µ‚½IƒQ[ƒ€‚ğI—¹‚µ‚Ü‚·B\n");
+                                    printf("ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã—ã¾ã—ãŸï¼ã‚²ãƒ¼ãƒ ã‚’çµ‚äº†ã—ã¾ã™ã€‚\n");
 
                                     getchar();
                                     system("cls");
@@ -137,7 +136,7 @@ int main(void){
                                     }
                                
                                          else {
-                                                printf("ƒZ[ƒu‚É¸”s‚µ‚Ü‚µ‚½B\n");
+                                                printf("ã‚»ãƒ¼ãƒ–ã«å¤±æ•—ã—ã¾ã—ãŸã€‚\n");
                                                 break;
                                             }
                                 }
@@ -145,7 +144,7 @@ int main(void){
         }
 
 
-//ƒŠƒgƒ‰ƒCŠm”F
+//ãƒªãƒˆãƒ©ã‚¤ç¢ºèª
         printf("1 : Play Again!!\n");
         printf("2 : Quit\n");
 
