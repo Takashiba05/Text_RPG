@@ -7,6 +7,11 @@
 #define SKILL_FILE "skills.txt"
 #define MAX_SKILL_POOL 200
 #define BASIC_ATTACK_ID 1 // パンチ（FIXED, MP消費0）。敵のMP不足時の共通フォールバックとして使う
+#define EXP_PER_LEVEL_BASE 100 // 次のレベルに必要な累積EXP = hero->level * EXP_PER_LEVEL_BASE
+#define GROWTH_HP(lv)  (8 + (lv) * 2)   // Lv2:+12 → Lv10:+28 → Lv14:+36
+#define GROWTH_ATK(lv) (1 + (lv) / 2)   // Lv2:+2  → Lv10:+6  → Lv14:+8
+#define GROWTH_DEF(lv) (1 + (lv) / 4)   // Lv2:+1  → Lv10:+3  → Lv14:+4
+#define GROWTH_MP(lv)  (1 + (lv) / 3)   // Lv2:+1  → Lv10:+4  → Lv14:+5
 
 // ==========================================
 // skills.txt を全件読み込む
@@ -20,7 +25,7 @@ static int load_all_skills(Skill *pool) {
 
     int count = 0;
     while (count < MAX_SKILL_POOL &&
-           fscanf(fp, "%d %19s %7s %d %d %d",
+           fscanf(fp, "%d %29s %7s %d %d %d",
                   &pool[count].id,
                   pool[count].name,
                   pool[count].pool,
@@ -146,6 +151,32 @@ static void use_skill(Character *attacker, Character *defender, Skill *used_skil
     }
 }
 
+static void gain_exp_and_level_up(Character *hero, int exp_gained) {
+    hero->exp += exp_gained;
+    printf("\n%s は %d の経験値を獲得した！\n", hero->name, exp_gained);
+
+    int leveled_up = 0;
+    while (hero->exp >= hero->level * EXP_PER_LEVEL_BASE) {
+        hero->exp -= hero->level * EXP_PER_LEVEL_BASE;
+        hero->level++;
+        hero->max_hp += GROWTH_HP(hero->level);
+        hero->atk    += GROWTH_ATK(hero->level);
+        hero->def    += GROWTH_DEF(hero->level);
+        hero->max_mp += GROWTH_MP(hero->level);
+        leveled_up = 1;
+    }
+
+    if (leveled_up) {
+        hero->hp = hero->max_hp; // レベルアップ時はHP・MPを全回復
+        hero->mp = hero->max_mp;
+        printf("レベルアップしました！！ %s は Lv.%d になった！\n", hero->name, hero->level);
+        printf("(HP上限:%d 攻撃力:%d 防御力:%d MP上限:%d)\n", hero->max_hp, hero->atk, hero->def, hero->max_mp);
+        printf("体力とMPが全回復した！\n");
+    } else {
+        printf("(次のレベルまであとEXP %d)\n", hero->level * EXP_PER_LEVEL_BASE - hero->exp);
+    }
+}
+
 // ==========================================
 // メイン：戦闘処理
 // 戻り値: 0=勝利/1=敗北/2=魔王撃破
@@ -167,14 +198,19 @@ int start_battle(Character *hero) {
     assign_enemy_skills(&enemy, pool, skill_count, hero->stage);
 
     printf("%s が現れた！\n", enemy.name);
+    printf("Lv.%-3d %s  HP:%d/%d\n", enemy.level, enemy.name, enemy.hp, enemy.max_hp);
 
     while (hero->hp > 0 && enemy.hp > 0) {
         printf("\n--- %s のターン ---\n", hero->name);
-        printf("HP:%d/%d MP:%d/%d\n", hero->hp, hero->max_hp, hero->mp, hero->max_mp);
+        printf("Lv.%-3d %s  HP:%d/%d MP:%d/%d\n", hero->level, hero->name, hero->hp, hero->max_hp, hero->mp, hero->max_mp);
+        printf("Lv.%-3d %s  HP:%d/%d MP:%d/%d\n", enemy.level, enemy.name, enemy.hp, enemy.max_hp, enemy.mp, enemy.max_mp);
+        printf("\n");
+        
         for (int i = 0; i < hero->skill_count; i++) {
             Skill *s = find_skill(pool, skill_count, hero->skill_id[i]);
             printf("%d: %s (MP%d)\n", i + 1, s->name, s->mp_cost);
         }
+        printf("\n");
         printf("使う技を選んでください >> ");
 
         int choice;
@@ -225,7 +261,13 @@ int start_battle(Character *hero) {
     if (hero->hp <= 0) {
         return 1;
     }
-
+    
+    // 勝利：EXP加算・レベルアップ処理
+    gain_exp_and_level_up(hero, enemy.exp);
+    printf("\n");
+    printf("続けるには何かキーを押してください...");
+    getchar();
+    
     if (enemy.is_boss) {
         return 2;
     }

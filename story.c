@@ -47,7 +47,7 @@ void play_opening_story(Character *hero) {
     printf("名前を入力してください >> ");
     
     // 名前の入力
-    scanf("%19s", hero->name);
+    scanf("%49s", hero->name);
     while (getchar() != '\n');
 
     system("cls");
@@ -57,7 +57,7 @@ void play_opening_story(Character *hero) {
     printf("??? : %s様、どうか世界を救ってください。\n", hero->name);
     printf("??? : では いってらっしゃーーい！！\n\n");
     printf("うわぁぁぁぁぁぁ！！");
-    printf("➤");
+    printf("➤ ");
     getchar();
     system("cls");
 }
