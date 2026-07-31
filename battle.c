@@ -200,6 +200,9 @@ int start_battle(Character *hero) {
     printf("%s が現れた！\n", enemy.name);
     printf("Lv.%-3d %s  HP:%d/%d\n", enemy.level, enemy.name, enemy.hp, enemy.max_hp);
 
+    printf("➤ ");
+    getchar();
+
     while (hero->hp > 0 && enemy.hp > 0) {
         printf("\n--- %s のターン ---\n", hero->name);
         printf("Lv.%-3d %s  HP:%d/%d MP:%d/%d\n", hero->level, hero->name, hero->hp, hero->max_hp, hero->mp, hero->max_mp);
@@ -231,8 +234,14 @@ int start_battle(Character *hero) {
 
         if (enemy.hp <= 0) break;
 
+        printf("➤ ");
+        getchar();
+
         printf("\n--- %s のターン ---\n", enemy.name);
         printf("HP:%d/%d MP:%d/%d\n", enemy.hp, enemy.max_hp, enemy.mp, enemy.max_mp);
+
+        printf("➤ ");
+        getchar();
 
         // MPが足りている技だけを候補として絞り込む
         int usable_skills[MAX_SKILL_SLOT];
