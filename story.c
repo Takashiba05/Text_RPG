@@ -11,7 +11,7 @@ void play_opening_story(Character *hero) {
     printf("頭が割れるように痛い。\n\n");
     printf("> \n\n");
     getchar();
-
+  
     printf("確かあの時...宝くじで10億円当てて...\n");
     printf("ここは一体。\n\n");
     printf("> \n\n");
@@ -47,7 +47,7 @@ void play_opening_story(Character *hero) {
     printf("名前を入力してください >> ");
 
     // 名前の入力
-    scanf("%19s", hero->name);
+    scanf("%49s", hero->name);
     while (getchar() != '\n');
 
     system("cls");
