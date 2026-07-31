@@ -31,7 +31,7 @@ typedef struct {
 // 技（スキル）のデータ構造
 typedef struct {
     int id;              // 技の一意なID
-    char name[20];         // 技の名前（fscanf "%19s" に対応）
+    char name[30];         // 技の名前（fscanf "%19s" に対応）
     char pool[8];            // 技の分類タグ（FIXED / WEAK / STRONG / ENEMY）
     int power;                // 技の威力（攻撃力に加算される）
     int mp_cost;                // 消費MP（マイナスの場合はMP回復技を意味する）

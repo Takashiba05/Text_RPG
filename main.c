@@ -3,10 +3,19 @@
 #include <time.h>
 #include "General_Rules.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 int main(void){
     int start = 0;
     int retry;
     Character hero;
+
+    #ifdef _WIN32
+        SetConsoleOutputCP(CP_UTF8); // コンソールの出力コードページをUTF-8に強制
+        SetConsoleCP(CP_UTF8);       // 入力側も合わせる
+    #endif
 
     srand((unsigned int)time(NULL)); // 乱数シードはプログラム起動時に1回だけ初期化
 
@@ -22,7 +31,7 @@ int main(void){
         printf("_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/\n\n\n\n");
 
         while(start != 1 && start != 2){
-            printf("1 :はじめから    ※前にセーブしていたデータは削除されます\n");
+            printf("1 :はじめから    ※ 前にセーブしていたデータは削除されます\n");
             printf("2 :前のセーブデータから\n");
             printf(">>");
 
@@ -82,21 +91,68 @@ int main(void){
         //roop処理で５回
         for (; hero.stage <= 5; hero.stage++) {
 
-            int original_stage = hero.stage; // ループ制御用に退避
-
-            // 裏ボス出現抽選（1%）
-            if (rand() % 100 == 0) {
-                play_secret_boss_encounter(); // story.cに演出を委譲
-                hero.stage = 777;
+            // ステージごとの戦闘回数：通常ステージ(1〜4)は3体、
+            // 最終ステージ(5)は魔王(is_boss)の1戦のみ
+            int battle_count = (hero.stage == 5) ? 1 : 3;
+        
+            int game_over = 0;      // 敗北した
+            int game_cleared = 0;   // 魔王(裏ボス含む)を撃破した
+            int stage_cleared = 1;  // このステージの全戦闘に勝利したか
+        
+            for (int b = 0; b < battle_count; b++) {
+        
+                int original_stage = hero.stage; // ループ制御用に退避
+        
+                // 裏ボス出現抽選（1%、戦闘ごとに判定）
+                if (rand() % 100 == 0) {
+                    play_secret_boss_encounter(); // story.cに演出を委譲
+                    hero.stage = 777;
+                }
+        
+                int battle_result = start_battle(&hero);
+        
+                hero.stage = original_stage; // 抽選に関わらず必ず復元
+        
+                if (battle_result == 1) {
+                    printf("ゲームオーバー！\n");
+                    printf("もう一度異世界転生する？\n");
+                    game_over = 1;
+                    stage_cleared = 0;
+                    break;
+                }
+        
+                if (battle_result == 2) {
+                    printf("続けるには何かキーを押してください...");
+                    getchar();
+                    system("cls");
+        
+                    printf("おめでとう！！この世界の平和は保たれた！！！\n");
+                    printf("君は最強の戦士だ！\n\n");
+                    printf("もう一度最初から遊ぶ！！\n");
+                    printf("?");
+                    printf("\n");
+                    getchar();
+        
+                    game_cleared = 1;
+                    stage_cleared = 0;
+                    break;
+                }
+        
+                // battle_result == 0 → このステージの次の敵へ
             }
-
-            int battle_result = start_battle(&hero);
-
-            hero.stage = original_stage; // 抽選に関わらず必ず復元
-
-            if (battle_result == 0) {
+        
+            if (game_over || game_cleared) {
+                break;
+            }
+        
+            if (stage_cleared) {
+                // ステージ内の全戦闘に勝利：HP/MPを全回復してから次のステージへ
+                hero.hp = hero.max_hp;
+                hero.mp = hero.max_mp;
+        
                 printf("ステージ%dをクリアしました！\n", hero.stage);
-
+                printf("%s は体力・MPを全回復した！\n\n", hero.name);
+        
                 int next_action = 0;
                 while (next_action != 1 && next_action != 2) {
                     printf("1 : 次のステージに進む\n");
@@ -107,26 +163,17 @@ int main(void){
                     }
                     while (getchar() != '\n');
                 }
-
+        
                 if (next_action == 2) {
                     printf("セーブしています...");
-
+        
                     FILE *fp_save = fopen("hero.txt", "w");
                     if (fp_save != NULL) {
-                        // hero.stageは現在クリアした値のまま。次回ロード時はfor文の再開点として
-                        // 「hero.stage+1」から始めたいので、保存時点で+1しておく
                         fprintf(fp_save, "%s %d %d %d %d %d %d %d %d %d\n",
-                            hero.name,
-                            hero.stage + 1,
-                            hero.hp,
-                            hero.max_hp,
-                            hero.atk,
-                            hero.def,
-                            hero.mp,
-                            hero.max_mp,
-                            hero.level,
-                            hero.exp);
-
+                            hero.name, hero.stage + 1, hero.hp, hero.max_hp,
+                            hero.atk, hero.def, hero.mp, hero.max_mp,
+                            hero.level, hero.exp);
+        
                         fclose(fp_save);
                         printf("データを保存しました！ゲームを終了します。\n");
                         getchar();
@@ -136,30 +183,8 @@ int main(void){
                         printf("セーブに失敗しました。\n");
                     }
                 }
-
+        
                 system("cls");
-            }
-
-            else if (battle_result == 1) {
-                printf("ゲームオーバー！\n");
-                printf("もう一度異世界転生する？\n");
-                break;
-            }
-
-            else if (battle_result==2){
-                system("cls");
-
-                printf("おめでとう！！この世界の平和は保たれた！！！\n");
-                printf("君は最強の戦士だ！\n\n");
-
-                printf("もう一度最初から遊ぶ！！\n");
-
-                printf("?");
-
-                printf("\n");
-                getchar();
-
-                break;
             }
         }
 
