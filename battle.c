@@ -165,7 +165,8 @@ static void gain_exp_and_level_up(Character *hero, int exp_gained) {
         hero->max_mp += GROWTH_MP(hero->level);
         leveled_up = 1;
     }
-
+    int next_threshold = hero->level * EXP_PER_LEVEL_BASE;
+    
     if (leveled_up) {
         hero->hp = hero->max_hp; // レベルアップ時はHP・MPを全回復
         hero->mp = hero->max_mp;
