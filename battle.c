@@ -173,7 +173,7 @@ static void gain_exp_and_level_up(Character *hero, int exp_gained) {
         printf("(HP上限:%d 攻撃力:%d 防御力:%d MP上限:%d)\n", hero->max_hp, hero->atk, hero->def, hero->max_mp);
         printf("体力とMPが全回復した！\n");
     } else {
-        printf("(次のレベルまであとEXP %d)\n", hero->level * EXP_PER_LEVEL_BASE - hero->exp);
+        printf("経験値 %d / %d (次のLv.%dまで)\n", hero->exp, next_threshold, hero->level + 1);
     }
 }
 
